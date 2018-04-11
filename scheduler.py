@@ -8,19 +8,20 @@ from pprint import pprint
 ### ------- HERE ARE PARAMETERS TO CONFIGURE -------
 
 # host name in config.yml
-host = 'cs_eng'
+host = ''
 
 # The space in which your dashboards live
-space_id = 1
+space_id =
 
-# datagroup that you want to trigger off of
-datagroup = 'thelook::users_dg'
+# datagroup that you want to trigger off of. Make sure to use the format model_name::datagroup_name (e.g. datagroup = 'thelook::users_dg')
+datagroup = ''
 
 # the email address that recieves all these schedules
-email = 'jesse@looker.com'
+email = ''
 
-# the user attribute id that you're filtering on
-user_attribute_id = 11
+# the user attribute id that you're filtering on.
+# go to Admin > User Attributes. Click 'Edit' next to your selected user attribute, and you'll see the user_attribute_id at the end of the URL
+user_attribute_id =
 
 ### ------- OPEN THE CONFIG FILE and INSTANTIATE API -------
 
@@ -69,9 +70,6 @@ for j in user_ids:
             pass
 looker.auth
 
-
-
-
 ### ------- EVALUATE WHICH PLANS NEED TO BE CREATED -------
 
 # First create a list of every possible scheduled plan
@@ -102,7 +100,7 @@ for i in meta_info_all:
         pass
 pprint(meta_info_build)
 
-## ------- CREATE A PLAN FOR EACH GROUP/DASHBOARD COMBINATION THAT HAS NOT BEEN BUILT YET ------- ###
+### ------- CREATE A PLAN FOR EACH GROUP/DASHBOARD COMBINATION THAT HAS NOT YET BEEN BUILT -------
 def json_builder(dashboard_name, user_id ,dashboard_id, datagroup, email):
     return json.dumps({
                         "name": dashboard_name,
@@ -121,5 +119,6 @@ def json_builder(dashboard_name, user_id ,dashboard_id, datagroup, email):
                         "run_once": True
                         })
 
+### ------- BUILD THE PLANS -------
 for i in meta_info_build:
     looker.create_scheduled_plan(json_builder(i['name'], i['user_id'], i['dashboard_id'], datagroup, email))
